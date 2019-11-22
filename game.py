@@ -1,12 +1,13 @@
 from snake import Snake, multiply, add, invert
 import pygame, random, math
+import settings
 
 class Board():
     
     def __init__(self, screen):
         self.screen = screen
-        self.width, self.height = 50, 50
-        self.tileSize = (10, 10)
+        self.width, self.height = settings.boardSize
+        self.tileSize = settings.tileSize
         self.food = ()
         self.snake = Snake()
         self.spawnFood()
@@ -19,24 +20,28 @@ class Board():
             self.eat()
 
         self.draw()
-        pygame.display.flip()
 
-        print(self.info())
+        # print(self.info())
 
 
     def draw(self):
         colour = (255,165,0) if self.snake.dead else (255,255,255)
         for p in self.snake.positions:
-            r = pygame.Rect(add(multiply(p, self.tileSize), (1,1)), (8,8))
+            r = pygame.Rect(add(multiply(p, self.tileSize), 
+                multiply(self.tileSize, (0.1,0.1))), 
+                multiply(self.tileSize, (0.8,0.8)))
             pygame.draw.rect(self.screen, colour, r)
         
-        r = pygame.Rect(add(multiply(self.food, self.tileSize), (1,1)), (8,8))
+        r = pygame.Rect(add(multiply(self.food, self.tileSize), 
+            multiply(self.tileSize, (0.1,0.1))), 
+            multiply(self.tileSize, (0.8,0.8)))
         pygame.draw.rect(self.screen, (150, 0, 0), r)
 
 
     def spawnFood(self):
-        x = random.randint(0,49)
-        y = random.randint(0,49)
+        bx, by = settings.boardSize
+        x = random.randint(0,bx-1)
+        y = random.randint(0,by-1)
         self.food = (x, y)
 
 
@@ -63,7 +68,7 @@ class Board():
                         vision.append(0.67)
                         break
                 else:
-                    if i+x < 0 or i+x >= 50 or j+y < 0 or j+y >= 50:
+                    if i+x < 0 or i+x >= self.width or j+y < 0 or j+y >= self.height:
                         vision.append(1)
                     elif d == self.food:
                         vision.append(0)

@@ -1,3 +1,6 @@
+import settings
+from math import floor
+
 NORTH = (0,-1)
 EAST = (1,0)
 SOUTH = (0,1)
@@ -20,11 +23,12 @@ def combine(pos, d):
 
 class Snake():
     def __init__(self):
+        middleX = floor(settings.boardSize[0]/2)
+        middleY = floor(settings.boardSize[1]/2)
         self.length = 3
-        self.headPos = (25,25)
-        self.positions = [(25,25), (24,25), (23,25)]
-        self.lastPos = (22,25)
-        self.pos = 5
+        self.headPos = (middleX,middleY)
+        self.positions = [self.headPos, (middleX-1,middleY), (middleX-2,middleY)]
+        self.lastPos = (middleX-3,middleY)
         self.direction = [EAST,EAST,EAST,EAST]
         self.turned = False
         self.dead = False
@@ -53,7 +57,8 @@ class Snake():
     def hit(self, head):
         # Wall
         x, y = head
-        if x < 0 or x >= 50 or y < 0 or y >= 50:
+        bx, by = settings.boardSize
+        if x < 0 or x >= bx or y < 0 or y >= by:
             return True
         
         # Itself
